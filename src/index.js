@@ -1,43 +1,52 @@
-/** const,let  */
-var val1 = "var変数";
-console.log(val1);
-let val2 = "変数";
-console.log(val2);
-const val4 = {
-  name: "aa",
-  age: 28
-};
-val4.name = "uuu";
-console.log(val4);
-/** アロー関数  */
-const func3 = (num1, num2) => {
-  return num1 + num2;
-};
-console.log(func3(3, 4)); /*7が出力 */
+import "./styles.css";
 
-/** 分割代入 とテンプレート文字列 */
-const profile = {
-  name: "aaa",
-  age: 22
+const onClickAdd = () => {
+  const inputText = document.getElementById("add-text").value;
+  document.getElementById("add-text").value = "";
+  imcompleteAdd(inputText);
 };
-const message1 = `私の名前は${profile.name}です。年齢は${profile.age}`;
-console.log(message1);
-/** profileを何回も書かなくて済む  */
-const { name, age } = profile;
-const message2 = `私の名前は${name}です。年齢は${age}`;
-console.log(message2);
 
-/** スプレッド構文  */
-const arr1 = [1, 2, 3, 4, 5];
-const arr2 = [9, 0, 7, 6, 8];
-/** 配列の残り  */
-function unshift(array, ...rest) {
-  return [...array, ...rest];
-}
-console.log(unshift(arr1, 6, 7, 8, 9));
-/** 配列をコピー */
-const arr3 = [...arr1];
-console.log(arr3);
-/** 配列を結合 */
-const arr4 = [...arr1, ...arr2];
-console.log(arr4);
+const deleteFromList = (target) => {
+  document.getElementById("imcomplete-list").removeChild(target);
+};
+
+const imcompleteAdd = (text) => {
+  const div = document.createElement("div");
+  div.className = "list-row";
+  const li = document.createElement("li");
+  li.innerText = text;
+  const completeButton = document.createElement("button");
+  completeButton.innerText = "完了";
+  completeButton.addEventListener("click", () => {
+    deleteFromList(completeButton.parentNode);
+    const addTarget = completeButton.parentNode;
+    const text = addTarget.firstElementChild.innerText;
+    addTarget.textContent = null;
+    const li = document.createElement("li");
+    li.innerText = text;
+    const backButton = document.createElement("button");
+    backButton.innerText = "戻す";
+    backButton.addEventListener("click", () => {
+      const deleteTarget = backButton.parentNode;
+      document.getElementById("complete-list").removeChild(deleteTarget);
+      const backTarget = backButton.parentNode.firstElementChild.innerText;
+      imcompleteAdd(backTarget);
+    });
+    addTarget.appendChild(li);
+    addTarget.appendChild(backButton);
+    document.getElementById("complete-list").appendChild(addTarget);
+  });
+
+  const deleteButton = document.createElement("button");
+  deleteButton.innerText = "削除";
+  deleteButton.addEventListener("click", () => {
+    deleteFromList(deleteButton.parentNode);
+  });
+  div.appendChild(li);
+  div.appendChild(completeButton);
+  div.appendChild(deleteButton);
+  document.getElementById("imcomplete-list").appendChild(div);
+};
+document
+  .getElementById("add-button")
+  .addEventListener("click", () => onClickAdd());
